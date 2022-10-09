@@ -8,8 +8,8 @@ import java.util.List;
 public sealed interface Tree<T> permits InnerNode, Tree.Leaf {
     record Leaf<T> (T content, @NonNull InnerNode<T> parent)
             implements Tree<T> {}
-    record Root<T> (T content, List<InnerNode<T>> children)
+    record Root<T> (T content, List<Tree<T>> children)
             implements RootNode<T> {}
-    record Inner<T> (T content, @NonNull InnerNode<T> parent, List<InnerNode<T>> children)
+    record Inner<T> (T content, @NonNull InnerNode<T> parent, List<Tree<T>> children)
             implements InnerNode<T> {}
 }
