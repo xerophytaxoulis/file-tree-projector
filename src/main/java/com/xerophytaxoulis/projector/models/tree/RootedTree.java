@@ -1,40 +1,13 @@
 package com.xerophytaxoulis.projector.models.tree;
 
-import org.springframework.lang.NonNull;
+public class RootedTree<T, L> {
+    private Node.Root<T, L> root;
 
-import java.util.List;
-
-// Recursive definition of a rooted tree
-public sealed interface RootedTree<T, L> permits InnerNode, TerminalNode {
-    record Leaf<T, L> (T container,
-                    @NonNull L label,
-                    @NonNull InnerNode<T, L> parent) implements TerminalNode<T, L> {}
-    record Root<T, L> (T container,
-                    @NonNull L label,
-                    List<RootedTree<T, L>> children) implements TerminalNode<T, L>, InnerNode<T, L> {
-        public Root {
-            if (children != null) {
-                for (RootedTree<T, L> child : children) {
-                    if (child == null) {
-                        throw new IllegalArgumentException("Child can not be null.");
-                    }
-                }
-            }
-        }
+    public RootedTree(Node.Root<T, L> root) {
+        this.root = root;
     }
-    record Inner<T, L> (T container,
-                     @NonNull L label,
-                     @NonNull InnerNode<T, L> parent,
-                     List<RootedTree<T, L>> children) implements InnerNode<T, L> {
-        public Inner {
-            if (children == null) {
-                throw new IllegalArgumentException("Children of Inner node can not be null.");
-            }
-            for (RootedTree<T, L> child : children) {
-                if (child == null) {
-                    throw new IllegalArgumentException("Child can not be null.");
-                }
-            }
-        }
+
+    public Node.Root<T, L> getRoot() {
+        return root;
     }
 }
