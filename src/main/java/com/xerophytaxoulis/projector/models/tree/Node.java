@@ -1,10 +1,8 @@
 package com.xerophytaxoulis.projector.models.tree;
 
-import jdk.jshell.spi.ExecutionControl;
 import org.springframework.lang.NonNull;
 
 import java.util.List;
-import java.util.function.Function;
 
 // Recursive definition of a rooted tree
 public sealed interface Node<T, L> permits InnerNode, TerminalNode {
