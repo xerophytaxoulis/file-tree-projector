@@ -5,39 +5,31 @@ import org.springframework.lang.NonNull;
 import java.util.List;
 
 // Recursive definition of a rooted tree
-public sealed interface Node<T, L> permits InnerNode, TerminalNode {
-    record Leaf<T, L>(T container,
-                      @NonNull L label,
-                      @NonNull InnerNode<T, L> parent) implements TerminalNode<T, L> {
+public sealed interface Node<T, L> {
+    record InnerNode<T, L>(T container,
+                           @NonNull L label,
+                           List<? extends Node<T, L>> children) implements Node<T, L> {}
+    record TerminalNode<T, L>(T container,
+                             @NonNull L label) implements Node<T, L> {}
+
+    default L getLabel() {
+        return switch (this) {
+            case InnerNode<T, L> inner -> inner.label();
+            case TerminalNode<T, L> terminal -> terminal.label();
+        };
     }
 
-    record Root<T, L>(T container,
-                      @NonNull L label,
-                      List<Node<T, L>> children) implements TerminalNode<T, L>, InnerNode<T, L> {
-        public Root {
-            if (children != null) {
-                for (Node<T, L> child : children) {
-                    if (child == null) {
-                        throw new IllegalArgumentException("Child can not be null.");
-                    }
-                }
-            }
-        }
+    default List<? extends Node<T, L>> getChildren() {
+        return switch (this) {
+            case InnerNode<T, L> inner -> inner.children();
+            case TerminalNode<T, L> ignored -> null;
+        };
     }
 
-    record Inner<T, L>(T container,
-                       @NonNull L label,
-                       @NonNull InnerNode<T, L> parent,
-                       List<Node<T, L>> children) implements InnerNode<T, L> {
-        public Inner {
-            if (children == null) {
-                throw new IllegalArgumentException("Children of Inner node can not be null.");
-            }
-            for (Node<T, L> child : children) {
-                if (child == null) {
-                    throw new IllegalArgumentException("Child can not be null.");
-                }
-            }
-        }
+    default T getContainer() {
+        return switch (this) {
+            case InnerNode<T, L> inner -> inner.container;
+            case TerminalNode<T, L> terminal -> terminal.container;
+        };
     }
 }
