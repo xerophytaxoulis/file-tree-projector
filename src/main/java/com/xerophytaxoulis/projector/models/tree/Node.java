@@ -19,12 +19,6 @@ public sealed interface Node<T, L> {
         };
     }
 
-    default List<? extends Node<T, L>> getChildren() {
-        return switch (this) {
-            case InnerNode<T, L> inner -> inner.children();
-            case TerminalNode<T, L> ignored -> null;
-        };
-    }
 
     default T getContainer() {
         return switch (this) {

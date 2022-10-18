@@ -44,13 +44,13 @@ public class StringPathTree {
                         .findFirst();
                 if (childContainer.isPresent()) {
                     yield new Node.InnerNode<>(inner.getContainer(), inner.getLabel(),
-                            inner.getChildren().stream().map(c ->
+                            inner.children().stream().map(c ->
                                     c.getLabel().equals(newLabel)
                                             ? addToTree(childContainer.get(), path, pos + 1)
                                             : c).toList());
                 } else {
-                    yield new Node.InnerNode<>(inner.getContainer(), inner.getLabel(),
-                            Stream.concat(inner.getChildren().stream(),
+                    yield new Node.InnerNode<>(inner.container(), inner.label(),
+                            Stream.concat(inner.children().stream(),
                                 Stream.of(
                                     addToTree(new Node.TerminalNode<T, String>(null, newLabel), path, pos + 1)
                                 )
