@@ -8,14 +8,26 @@ import java.util.List;
 public sealed interface Node<T, L> {
     record InnerNode<T, L>(T container,
                            @NonNull L label,
-                           List<? extends Node<T, L>> children) implements Node<T, L> {}
-    record TerminalNode<T, L>(T container,
-                             @NonNull L label) implements Node<T, L> {}
+                           List<Node<T, L>> children) implements Node<T, L> {
+        @Override
+        public String toString() {
+            return """
+                        InnerNode[container: %s, label: %s,
+                            children: %s]""".formatted(container, label, children);
+        }
+    }
+    record Leaf<T, L>(T container,
+                      @NonNull L label) implements Node<T, L> {
+        @Override
+        public String toString() {
+            return "Leaf[container: %s, label: %s]".formatted(container, label);
+        }
+    }
 
     default L getLabel() {
         return switch (this) {
             case InnerNode<T, L> inner -> inner.label();
-            case TerminalNode<T, L> terminal -> terminal.label();
+            case Node.Leaf<T, L> terminal -> terminal.label();
         };
     }
 
@@ -23,7 +35,7 @@ public sealed interface Node<T, L> {
     default T getContainer() {
         return switch (this) {
             case InnerNode<T, L> inner -> inner.container;
-            case TerminalNode<T, L> terminal -> terminal.container;
+            case Node.Leaf<T, L> terminal -> terminal.container;
         };
     }
 }
